@@ -133,6 +133,91 @@ func applyExponent(n: Int, e: Int) -> Int{
 applyExponent(3, 3)
 /* ----------------------------------------- */
 
+//function returning a function
+func makeIncrementer() -> (Int -> Int){
+    func addOne(number:Int) -> Int {
+        return 1 + number
+    }
+    return addOne
+}
+var increment = makeIncrementer()
+increment(3)
 
+func isEven() -> (Int -> Bool){
+    //Function to be returned has Int parameter, returns Bool
+    func checkNum(number:Int) -> Bool{
+        if(number % 2 == 0){
+            return true
+        }else{
+            return false
+        }
+    }
+    return checkNum
+}
+var evenyo = isEven()
+evenyo(3)
+/* ----------------------------------------- */
 
+//function taking another function as parameter 
+func hasAnyMatches(list: [Int], condition:Int -> Bool) -> Bool{
+    //Function in parameter takes in an Int and returns a Bool
+    for item in list {
+        if condition(item) {
+            return true
+        }
+    }
+    return false
+}
+func lessThanTen(number: Int) -> Bool {
+    return number < 10
+}
+func equalTo10(number: Int) -> Bool{
+    return number == 10
+}
+var numlist = [1, 2, 5, 17, 15]
+hasAnyMatches(numlist, lessThanTen)
+hasAnyMatches(numlist, equalTo10)
 
+func changeValue(val: Int, modifier: Int -> Int) -> Int {
+    //function in parameter takes in an int, returns an int
+    return modifier(val)
+}
+func add(val: Int) -> Int {
+    return val + 10
+}
+func subtract(val: Int) -> Int {
+    return val - 10
+}
+func mistake(val: Int) -> String {
+    return "This won't work \(val)"
+}
+changeValue(5, add)
+changeValue(5, subtract)
+//changeValue(5, mistake) //will not work, wrong return type for parameter function
+/* ----------------------------------------- */
+
+//closures
+numlist.map({
+    (number: Int) -> Int in
+    let result = 3 * number
+    return result
+})
+//closures are essentially like functions, code to call later
+//in these two examples, instead of making an Int inside of the map() function,
+//we make a closure that returns an Int.
+//Essentially a function declared without a name used only at that moment
+numlist.map({
+    (number: Int) -> Int in
+    if(number % 2 != 0){
+        return 0
+    }else{
+        return 3 * number
+    }
+})
+//shortcut, omits parameter type if closure return type already known
+let mappedNumbers = numlist.map({number in 3 * number})
+mappedNumbers
+
+let sortedNumbers = sorted(numlist) {$0 > $1} // says how to sort the list
+sortedNumbers
+/* ----------------------------------------- */
