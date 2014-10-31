@@ -79,10 +79,12 @@ square.setColor("blue", square.isColor)
 class Person {
     var name: String
     var age: Int
+    var school: String
     
     init(name: String, age: Int){
         self.name = name
         self.age = age
+        self.school = "No school"
     }
     
     func getName() -> String {
@@ -96,6 +98,16 @@ class Person {
     func greeting() -> String {
         return "Hi, my name is \(self.name) and I'm \(age) years old."
     }
+    
+    var place: String {
+        get {
+            return school
+        }
+        set {
+            school = newValue
+        }
+    }
+    
 }
 
 class Student: Person {
@@ -136,5 +148,124 @@ lou.modifyCollege
 lou.greeting()
 lou.modifyCollege = "AGU"
 lou.greeting()
-
 /* ----------------------------------------------------------------- */
+
+//willSet - don't need to compute property immediately, but need code to run before/after value is assigned. Can be used to assign a value to object when value is assigned to a different object
+
+class NamedShape {
+    var numberOfSides = 0
+    var shapeName: String
+    
+    init(name: String){
+        self.shapeName = name
+    }
+    
+    func getDesc() -> String{
+        return "A \(shapeName) with \(numberOfSides)"
+    }
+}
+
+class Square: NamedShape {
+    var color: String
+    
+    init(color: String, name: String){
+        self.color = color
+        super.init(name: name)
+        self.numberOfSides = 4
+    }
+    
+    var shade: String {
+        get {
+            return "This is a shade of \(color)"
+        }
+        set{
+            color = newValue
+        }
+    }
+    
+    override func getDesc() -> String {
+        return "A \(self.shapeName) of the color \(color) with \(numberOfSides) sides"
+    }
+}
+var sq = Square(color: "Blue", name: "Square")
+sq.getDesc()
+sq.shade
+sq.shade = "Cyan"
+sq.shade
+
+class Triangle: NamedShape {
+    var color: String
+    
+    init(color: String, name: String){
+        self.color = color
+        super.init(name: name)
+        self.numberOfSides = 3
+    }
+    
+    var shade: String {
+        get {
+            return "This is a shade of \(color)"
+        }
+        set {
+            color = newValue
+        }
+    }
+    
+    override func getDesc() -> String {
+        return "A \(self.shapeName) of the color \(color) with \(numberOfSides) sides"
+    }
+}
+var tr = Triangle(color: "Red", name: "Triangle")
+tr.getDesc()
+
+class TriangleAndSquare {
+    var triangle: Triangle {
+        willSet {
+            square.color = newValue.color
+        }
+    }
+    
+    var square: Square {
+        willSet {
+            triangle.color = newValue.color
+        }
+    }
+    
+    init(color: String, name: String){
+        triangle = Triangle(color: color, name: name)
+        square = Square(color: color, name: name)
+    }
+    
+
+}
+var ts = TriangleAndSquare(color: "Green", name: "Shape")
+ts.triangle.color
+ts.square.color
+ts.square = Square(color: "Gray", name: "Square") //setting this value will also change triangle
+ts.square.color
+/* ----------------------------------------------------------------- */
+
+//in methods of classes, can specify second name for a parameter
+class Counter {
+    var count: Int = 0
+    
+    func incrementBy(amount: Int, numberOfTimes times: Int){
+        count += amount * times
+        //count += amount * numberOfTimes won't work, only used in parameter
+    }
+}
+var count = Counter()
+count.incrementBy(2, numberOfTimes: 7)
+//count.incrementBy(2, times: 7) declared a name for the parameter, must use it 
+/* ----------------------------------------------------------------- */
+
+//can write optional ? before methods and properties 
+var optionalSquare: Square? = Square(color: "Yellow", name: "Why")
+//var optionalSquare: Square?
+let color = optionalSquare?.color //if value is nil, do nothing afer the ?, conveniet for missing values but code still needs to execute.
+/* ----------------------------------------------------------------- */
+
+
+
+
+
